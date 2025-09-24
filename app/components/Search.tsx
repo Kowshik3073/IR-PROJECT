@@ -8,6 +8,8 @@ export default function Search() {
     const [results, setResults] = useState<SearchResult[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [useSoundex, setUseSoundex] = useState(false);
+    const [useSpellCorrection, setUseSpellCorrection] = useState(false);
 
     const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -17,7 +19,10 @@ export default function Search() {
         setError(null);
 
         try {
-            const searchResults = await searchCorpus(query);
+            const searchResults = await searchCorpus(query, 5, {
+                useSoundex,
+                useSpellCorrection
+            });
             setResults(searchResults);
         } catch (err) {
             setError('Failed to perform search. Please try again.');
@@ -45,6 +50,26 @@ export default function Search() {
                     >
                         {loading ? 'Searching...' : 'Search'}
                     </button>
+                </div>
+                <div className="mt-3 flex flex-wrap items-center gap-4 text-sm text-foreground/80">
+                    <label className="inline-flex items-center gap-2 cursor-pointer select-none">
+                        <input
+                            type="checkbox"
+                            checked={useSoundex}
+                            onChange={(e) => setUseSoundex(e.target.checked)}
+                            className="h-4 w-4 accent-blue-600"
+                        />
+                        <span>Use Soundex</span>
+                    </label>
+                    <label className="inline-flex items-center gap-2 cursor-pointer select-none">
+                        <input
+                            type="checkbox"
+                            checked={useSpellCorrection}
+                            onChange={(e) => setUseSpellCorrection(e.target.checked)}
+                            className="h-4 w-4 accent-blue-600"
+                        />
+                        <span>Use Spell Correction</span>
+                    </label>
                 </div>
             </form>
 

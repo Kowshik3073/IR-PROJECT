@@ -24,10 +24,16 @@ export interface SearchResult {
     snippet: string;
 }
 
-export async function searchCorpus(query: string, topK: number = 5): Promise<SearchResult[]> {
+export async function searchCorpus(
+    query: string,
+    topK: number = 5,
+    options?: { useSoundex?: boolean; useSpellCorrection?: boolean }
+): Promise<SearchResult[]> {
     const params = new URLSearchParams({
         query: query,
-        top_k: topK.toString()
+        top_k: topK.toString(),
+        use_soundex: String(options?.useSoundex ?? false),
+        use_spellcorrection: String(options?.useSpellCorrection ?? false)
     });
     
     const response = await fetch(`${API_BASE_URL}/search?${params.toString()}`, {
